@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>שכנות שלובות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Karantina:wght@400;700&family=Rubik:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0C0D1C; --ink2:#171932; --ink3:#24274A;
+  --lime:#D9FF3F; --blue:#3446FF; --red:#FF4B2B; --paper:#F3F0E6; --mute:#8B8DAA;
+  --disp:'Karantina','Rubik',sans-serif; --body:'Rubik',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--ink);color:var(--paper);font-family:var(--body);-webkit-font-smoothing:antialiased}
+body{min-height:100vh;background:
+  radial-gradient(circle at 1px 1px,rgba(243,240,230,.07) 1px,transparent 0) 0 0/22px 22px,var(--ink)}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+#app{max-width:520px;margin:0 auto;padding:18px 18px 40px;min-height:100vh;display:flex;flex-direction:column}
+.hide{display:none!important}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:17px;
+  padding:15px 22px;border-radius:999px;transition:transform .12s,background .2s,opacity .2s;letter-spacing:.01em}
+.btn:active{transform:scale(.97)}
+.btn.lime{background:var(--lime);color:var(--ink)}
+.btn.red{background:var(--red);color:var(--ink)}
+.btn.blue{background:var(--blue);color:var(--paper)}
+.btn.ghost{border:2px solid rgba(243,240,230,.25);color:var(--paper)}
+.btn.ghost:hover{border-color:var(--paper)}
+.btn[disabled]{opacity:.35;pointer-events:none}
+.btn.wide{width:100%}
+.link{color:var(--mute);font-size:14px;text-decoration:underline;text-underline-offset:3px}
+.icon-btn{width:40px;height:40px;border-radius:50%;border:2px solid rgba(243,240,230,.18);display:grid;place-items:center;font-size:15px;font-weight:700}
+.icon-btn:hover{border-color:var(--lime);color:var(--lime)}
+
+/* ---------- home ---------- */
+.home{flex:1;display:flex;flex-direction:column;justify-content:center;gap:26px;padding:20px 0}
+.kicker{font-size:13px;font-weight:700;letter-spacing:.18em;color:var(--lime)}
+.logo{font-family:var(--disp);font-weight:700;line-height:.78;font-size:clamp(108px,30vw,150px);letter-spacing:-.01em}
+.logo span{display:block}
+.logo .l2{color:var(--lime);margin-right:.45em}
+.tag{font-size:22px;font-weight:500;line-height:1.3}
+.tag em{font-style:normal;background:var(--blue);padding:0 .25em}
+.hero-net{width:100%;height:150px}
+.meta{display:flex;gap:10px;flex-wrap:wrap}
+.meta span{font-size:13px;border:1.5px solid rgba(243,240,230,.2);border-radius:999px;padding:6px 12px;color:#C9C8D6}
+.stack{display:flex;flex-direction:column;gap:12px}
+
+/* ---------- setup ---------- */
+h2{font-family:var(--disp);font-size:64px;line-height:.9;font-weight:700}
+h2 .hl{color:var(--lime)}
+.sub{color:#C9C8D6;font-size:15px;line-height:1.5}
+.namebox{display:flex;gap:8px;margin-top:6px}
+.namebox input{flex:1;font:inherit;font-size:18px;padding:14px 18px;border-radius:999px;border:2px solid rgba(243,240,230,.2);
+  background:var(--ink2);color:var(--paper);outline:none}
+.namebox input:focus{border-color:var(--lime)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;background:var(--ink3);
+  font-weight:500;font-size:16px;border:2px solid transparent;transition:all .15s}
+.chip .x{opacity:.5;font-size:14px}
+.chip.sel{background:var(--lime);color:var(--ink);border-color:var(--lime)}
+.chip.sug{border-color:var(--lime)}
+.chip.sel.sug{box-shadow:0 0 0 3px rgba(217,255,63,.25)}
+.rules-mini{background:var(--ink2);border-radius:20px;padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.rules-mini li{list-style:none;display:flex;gap:12px;font-size:15px;line-height:1.45;color:#DCDAE6}
+.rules-mini li b{color:var(--paper)}
+.num{flex:none;width:24px;height:24px;border-radius:50%;background:var(--lime);color:var(--ink);font-weight:900;font-size:13px;display:grid;place-items:center;margin-top:1px}
+
+/* ---------- table ---------- */
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mini-logo{font-family:var(--disp);font-weight:700;font-size:32px;line-height:1}
+.mini-logo b{color:var(--lime);font-weight:700}
+.top .tools{display:flex;gap:8px;align-items:center}
+.count{font-size:13px;color:var(--mute);font-weight:500;margin-left:4px}
+.netwrap{position:relative;margin:6px -8px 0}
+.net{width:100%;display:block}
+.legend{display:flex;gap:14px;justify-content:center;font-size:12px;color:var(--mute);margin-top:-4px}
+.legend i{display:inline-block;width:22px;height:0;border-top:3px solid var(--lime);vertical-align:middle;margin-left:6px}
+.legend i.d{border-top:3px dashed var(--red)}
+.stage{flex:1;display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:10px}
+.prompt{font-size:19px;text-align:center;font-weight:500}
+.prompt b{color:var(--lime)}
+.hint{font-size:13px;color:var(--mute);text-align:center;line-height:1.5}
+
+/* ---------- card ---------- */
+.flip{width:min(330px,86vw);aspect-ratio:63/88;perspective:1400px;container-type:inline-size}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.3,1.3,.5,1);transform-style:preserve-3d}
+.flip.flipped .flip-in{transform:rotateY(180deg)}
+.flip.noanim .flip-in{transition:none}
+.face{position:absolute;inset:0;border-radius:22px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;
+  box-shadow:0 18px 50px rgba(0,0,0,.45)}
+.back{background:var(--blue);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.back svg{position:absolute;inset:0;width:100%;height:100%}
+.back .bk{position:relative;text-align:center;font-family:var(--disp);font-weight:700;color:var(--lime);font-size:19.4cqw;line-height:.8}
+.back .bk small{display:block;font-family:var(--body);font-size:3.7cqw;letter-spacing:.2em;color:var(--paper);margin-top:14px;font-weight:700}
+.flip.ready .back{animation:nudge 2.4s ease-in-out infinite}
+@keyframes nudge{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-1deg)}}
+.front{transform:rotateY(180deg);padding:6.7cqw 6.7cqw 5.5cqw;display:flex;flex-direction:column}
+.front .tt{display:flex;justify-content:space-between;align-items:center;font-size:3.7cqw;font-weight:900;letter-spacing:.16em}
+.front .tt .no{font-family:var(--disp);font-size:8.5cqw;letter-spacing:0;font-weight:700;opacity:.55}
+.front .glyph{position:absolute;left:-12cqw;bottom:-12cqw;width:58cqw;height:58cqw;opacity:.16;pointer-events:none}
+.front h3{font-family:var(--disp);font-weight:700;font-size:18.8cqw;line-height:.85;margin:4.2cqw 0}
+.front p{font-size:6.6cqw;line-height:1.5;font-weight:500;position:relative}
+.front p .nm{font-weight:900;padding:0 .18em;border-radius:4px}
+.front .foot{margin-top:auto;font-size:4.2cqw;opacity:.7;line-height:1.4;position:relative;padding-top:3cqw}
+.t-guess{background:var(--lime);color:var(--ink)} .t-guess .nm{background:var(--ink);color:var(--lime)}
+.t-chain{background:var(--blue);color:var(--paper)} .t-chain .nm{background:var(--lime);color:var(--ink)}
+.t-bet{background:var(--red);color:var(--ink)} .t-bet .nm{background:var(--ink);color:var(--red)}
+.t-reveal{background:var(--paper);color:var(--ink)} .t-reveal .nm{background:var(--blue);color:var(--paper)}
+.t-pair{background:var(--ink2);color:var(--paper);border:2px solid var(--lime)} .t-pair .nm{background:var(--lime);color:var(--ink)}
+.t-pair .tt{color:var(--lime)}
+
+.timer{display:flex;align-items:center;gap:12px}
+.timer .clock{font-family:var(--disp);font-size:44px;font-weight:700;min-width:70px;text-align:center;line-height:1}
+.timer.done .clock{color:var(--red);animation:blink .5s 4}
+@keyframes blink{50%{opacity:.2}}
+
+.outcomes{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.outcomes .btn{flex-direction:column;gap:2px;padding:14px 10px;border-radius:20px;line-height:1.15}
+.outcomes .btn small{font-weight:500;font-size:12px;opacity:.75}
+.outcomes .skip{grid-column:1/-1;padding:10px}
+
+.tiebox{width:100%;max-width:520px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.tiehead{font-size:13px;color:var(--mute);font-weight:500}
+.tiebox .chips{justify-content:center}
+.tiebox .chip{padding:7px 14px;font-size:15px}
+.shake{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.panel{width:100%;background:var(--ink2);border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.panel h4{font-size:20px;font-weight:700}
+.panel .sub{font-size:14px}
+
+/* ---------- overlay ---------- */
+.ov{position:fixed;inset:0;background:rgba(12,13,28,.94);backdrop-filter:blur(6px);z-index:50;overflow:auto;display:flex;justify-content:center}
+.ov-in{max-width:520px;width:100%;padding:28px 22px 40px;display:flex;flex-direction:column;gap:18px}
+.ov-top{display:flex;justify-content:space-between;align-items:center}
+
+/* ---------- end ---------- */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--ink2);border-radius:18px;padding:14px 10px;text-align:center}
+.stat b{display:block;font-family:var(--disp);font-size:52px;line-height:.9;font-weight:700}
+.stat span{font-size:12px;color:var(--mute)}
+.stat.l b{color:var(--lime)} .stat.r b{color:var(--red)}
+.threads{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow:auto}
+.thread{display:flex;align-items:center;gap:10px;font-size:14px;padding:8px 12px;background:var(--ink2);border-radius:12px}
+.thread i{flex:none;width:18px;border-top:3px solid var(--lime)}
+.thread i.d{border-top-style:dashed;border-color:var(--red)}
+.thread .c{color:var(--mute);margin-right:auto;font-size:12px}
+.closing{background:var(--lime);color:var(--ink);border-radius:24px;padding:22px}
+.closing h3{font-family:var(--disp);font-size:54px;line-height:.85;margin-bottom:10px}
+.closing p{font-size:16px;line-height:1.5;font-weight:500}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--paper);color:var(--ink);padding:10px 18px;border-radius:999px;font-weight:700;font-size:14px;z-index:99;transition:opacity .3s}
+
+.net .ln{transition:opacity .4s}
+.net .ln.fresh{animation:pop 1.2s ease-out}
+@keyframes pop{0%{opacity:0;stroke-width:9}100%{opacity:1}}
+.net .node.fresh circle{animation:ping 1s ease-out}
+@keyframes ping{0%{stroke-width:10}100%{stroke-width:2}}
+
+@media (min-width:700px){ #app{padding-top:28px} }
+.kbd{display:none}
+/* ---------- big screen / TV ---------- */
+@media (min-width:980px) and (min-aspect-ratio:5/4){
+  #app{max-width:none;padding:2.6vh 3.5vw;height:100vh;min-height:0}
+  #app.narrow{max-width:min(720px,60vh);height:auto;min-height:100vh}
+  .home,.setupw{zoom:1.25}
+  .top .mini-logo{font-size:5vh}
+  .icon-btn{width:5vh;height:5vh;font-size:2vh}
+  .count{font-size:2vh}
+  .board{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:3vw;align-items:center;min-height:0}
+  .side{display:flex;flex-direction:column;justify-content:center;height:100%}
+  .side .net{max-height:72vh}
+  .legend{font-size:1.8vh}
+  .stage{margin:0;justify-content:center;gap:2vh;height:100%;min-height:0}
+  .flip{width:min(40vh,34vw)}
+  .stage.withcard .flip{width:min(46vh,34vw)}
+  .prompt{font-size:3.4vh}
+  .hint{font-size:1.7vh}
+  .btn{font-size:2.1vh;padding:1.7vh 2.4vh}
+  .outcomes{max-width:min(62vh,42vw)}
+  .outcomes .btn small{font-size:1.5vh}
+  .panel{max-width:min(62vh,42vw);padding:2.4vh;gap:1.6vh}
+  .panel h4{font-size:2.8vh} .panel .sub{font-size:1.8vh}
+  .chip,.tiebox .chip{font-size:2vh;padding:.9vh 1.7vh}
+  .tiehead{font-size:1.7vh}
+  .tiebox{max-width:min(62vh,42vw)}
+  .stage.withcard .flip{width:min(38vh,34vw)}
+  .timer .clock{font-size:6vh}
+  .kbd{display:block}
+  .endgrid{display:grid;grid-template-columns:1.1fr 1fr;gap:3vw;align-items:start}
+  #app.endw{max-width:1500px;margin:0 auto;height:auto;min-height:100vh}
+}
+.endgrid>div{display:flex;flex-direction:column;gap:20px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="ov" class="ov hide"><div class="ov-in" id="ovin"></div></div>
+<div id="toast" class="toast hide"></div>
+
+<script>
+/* ===================== THE DECK ===================== */
+const TYPES={
+  guess:{n:'ניחוש',  g:'<circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="8"/><circle cx="50" cy="50" r="12" fill="currentColor"/>'},
+  chain:{n:'שרשרת', g:'<circle cx="18" cy="70" r="13" fill="currentColor"/><circle cx="50" cy="30" r="13" fill="currentColor"/><circle cx="84" cy="66" r="13" fill="currentColor"/><path d="M18 70L50 30L84 66" fill="none" stroke="currentColor" stroke-width="6"/>'},
+  bet:  {n:'הימור',  g:'<path d="M50 8L94 88H6Z" fill="none" stroke="currentColor" stroke-width="8"/><circle cx="50" cy="62" r="9" fill="currentColor"/>'},
+  reveal:{n:'גילוי', g:'<g stroke="currentColor" stroke-width="7"><path d="M50 4V96M4 50H96M17 17L83 83M83 17L17 83"/></g><circle cx="50" cy="50" r="16" fill="currentColor"/>'},
+  pair: {n:'בזוג',   g:'<circle cx="36" cy="50" r="30" fill="none" stroke="currentColor" stroke-width="7"/><circle cx="64" cy="50" r="30" fill="none" stroke="currentColor" stroke-width="7"/>'}
+};
+// inv = who is pre-selected when a thread is drawn. "pick" = the reader chooses.
+const CARDS=[
+ {t:'chain', h:'שני צעדים', x:'{A} ו־{B}: מצאו מכרה משותפת. יש לכן 90 שניות.', f:'שכנה, מורה לנהיגה, בת דודה – הכול נחשב.', inv:['A','B'], timer:90},
+ {t:'guess', h:'הבלשית', x:'{A}, בחרי חפץ ש־{B} הביאה איתה הערב ונחשי מה הסיפור שלו.', f:'{B}: כמה מזה נכון?', inv:['A','B']},
+ {t:'reveal', h:'אצבע על המפה', x:'כולן בבת אחת: איפה גדלתן? מי גדלה הכי קרוב למי?', f:'מספיק אותו אזור.', inv:[], pick:true},
+ {t:'reveal', h:'דפיקה על השולחן', x:'{A} אומרת מקום אחד מחייה. מי שיש לה קשר אליו – דופקת על השולחן.', f:'גם קשר קלוש נחשב.', inv:['A'], pick:true},
+ {t:'guess', h:'שלושה ניחושים', x:'{A}, נחשי על {B}: קפה או תה? ים או הרים? חתולים או כלבים?', f:'{B} מסמנת כמה פגיעות.', inv:['A','B']},
+ {t:'pair', h:'שלושה דברים משותפים', x:'{A} ו־{B}: מצאו שלושה דברים משותפים בדקה.', f:'"שתינו אוהבות קפה" לא נחשב.', inv:['A','B'], timer:60},
+ {t:'bet', h:'באחוזים', x:'מה הסיכוי ש־{B} ו־{C} כבר נפגשו פעם? כולן מנחשות, והן בודקות.', f:'חתונה, תור, מעלית – הכול נחשב.', inv:['B','C']},
+ {t:'reveal', h:'אותה הופעה', x:'כולן בבת אחת: הופעה אחת שהייתן בה. מישהי עוד הייתה שם?', f:'אין? מחליפות להופעה אחרת.', inv:[], pick:true},
+ {t:'pair', h:'השדכנית', x:'{A}, יש לך מישהי ש־{B} חייבת להכיר? תארי אותה במשפט.', f:'אם {B} קונה – יש לכן משימה.', inv:['A','B']},
+ {t:'guess', h:'בגיל 12', x:'כולן מנחשות: מה {B} רצתה להיות בגיל 12?', f:'בחוט: {B} ומי שהייתה הכי קרובה.', inv:['B'], pick:true},
+ {t:'bet', h:'הצבעה על שלוש', x:'כולן מצביעות: מי כאן הכי סביר שפגשה פעם מישהו מפורסם?', f:'מי שקיבלה הכי הרבה קולות – מספרת.', inv:[], pick:true},
+ {t:'guess', h:'שלושה ניסיונות', x:'{A}, נחשי במה {B} עובדת. יש לך שלושה ניסיונות.', f:'כבר יודעות? אז במה היא עבדה פעם.', inv:['A','B']},
+ {t:'reveal', h:'אותו תור בסופר', x:'{A}, איפה את הכי הרבה מלבד הבית והעבודה? מי עוד מכירה את המקום?', f:'אולי כבר עמדתן באותו תור.', inv:['A'], pick:true},
+ {t:'chain', h:'אנשי קשר', x:'{A} אומרת שם משפחה מחייה. כולן מחפשות אותו בטלפון. מצאתן?', f:'אותו שם זה כבר התחלה.', inv:['A'], pick:true},
+ {t:'pair', h:'התמונה העשירית', x:'{A}, הראי ל־{B} את התמונה העשירית בגלריה שלך. {B} מנחשת מה הסיפור.', f:'לא נעים? קחי את האחת־עשרה.', inv:['A','B']},
+ {t:'guess', h:'סוכנת נסיעות', x:'{A}, נחשי לאן {B} הייתה טסה מחר בבוקר.', f:'{B} מגלה – ואולי מישהי כבר הייתה שם.', inv:['A','B']},
+ {t:'chain', h:'מסלול עוקף', x:'{B} ו־{C}: חברו ביניכן דרך מי שיושבת כאן. השרשרת הכי קצרה מנצחת.', f:'השולחן עצמו הוא הרשת.', inv:['B','C']},
+ {t:'pair', h:'עשרים שנות חברות', x:'{B}, ספרי איך את ו־{A} חברות כבר 20 שנה. {A}: מה מזה נכון?', f:'בדיה מוחלטת. מותר להגזים.', inv:['A','B']}
+];
+
+/* ===================== STATE ===================== */
+const KEY='shchenut-v1';
+let S=null, timerInt=null, freshLink=-1;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){return null}}
+function clearSave(){try{localStorage.removeItem(KEY)}catch(e){}}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.remove('hide');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.add('hide'),1800)}
+
+function degree(i){return S.links.filter(l=>l.a===i||l.b===i).length}
+function linked(i,j){return S.links.some(l=>(l.a===i&&l.b===j)||(l.a===j&&l.b===i))}
+function pickOther(excl, prefer){
+  const pool=S.players.map((_,i)=>i).filter(i=>!excl.includes(i));
+  // prefer people not yet connected to `prefer`, then least connected
+  pool.sort((x,y)=>{
+    const a=(prefer!=null&&linked(prefer,x)?10:0)+degree(x)+Math.random()*1.5;
+    const b=(prefer!=null&&linked(prefer,y)?10:0)+degree(y)+Math.random()*1.5;
+    return a-b});
+  return pool[0];
+}
+function suggestNext(){
+  const pool=S.players.map((_,i)=>i).filter(i=>i!==S.drawer);
+  let min=Infinity,best=[];
+  pool.forEach(i=>{const d=degree(i);if(d<min){min=d;best=[i]}else if(d===min)best.push(i)});
+  return best[Math.random()*best.length|0];
+}
+function allConnected(){
+  const n=S.players.length; if(n<2)return true;
+  const seen=new Set([0]),q=[0];
+  while(q.length){const v=q.shift();S.links.forEach(l=>{const w=l.a===v?l.b:l.b===v?l.a:-1;if(w>=0&&!seen.has(w)){seen.add(w);q.push(w)}})}
+  return seen.size===n;
+}
+
+/* ===================== NETWORK SVG ===================== */
+function netSVG(big){
+  if(!big&&isWide())big=true;
+  const n=S.players.length, W=360, H=big?340:196;
+  const cx=W/2, cy=H/2, rx=big?130:142, ry=big?118:62;
+  const pts=S.players.map((_,i)=>{const a=-Math.PI/2+i*2*Math.PI/n;return[cx+rx*Math.cos(a),cy+ry*Math.sin(a)]});
+  const seen={};let lines='';
+  S.links.forEach((l,k)=>{
+    const key=Math.min(l.a,l.b)+'-'+Math.max(l.a,l.b);const c=seen[key]=(seen[key]||0)+1;
+    const [x1,y1]=pts[l.a],[x2,y2]=pts[l.b];const dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy)||1;
+    const off=(c===1?0:(c%2?1:-1)*Math.ceil((c-1)/2)*16);
+    const mx=(x1+x2)/2-dy/len*off,my=(y1+y2)/2+dx/len*off;
+    const solid=l.k==='found';
+    lines+=`<path class="ln${k===freshLink?' fresh':''}" d="M${x1} ${y1}Q${mx} ${my} ${x2} ${y2}" fill="none" stroke="${solid?'#D9FF3F':'#FF4B2B'}" stroke-width="${solid?3:2.6}" ${solid?'':'stroke-dasharray="5 6"'} stroke-linecap="round"/>`;
+  });
+  let nodes='';
+  S.players.map((p,i)=>{
+    const [x,y]=pts[i],d=degree(i),r=Math.min(7+d*1.6,15),me=i===S.drawer&&!big;
+    const fresh=freshLink>=0&&S.links[freshLink]&&(S.links[freshLink].a===i||S.links[freshLink].b===i);
+    const ly=y+r+(big?19:15);
+    nodes+=`<g class="node${fresh?' fresh':''}"><circle cx="${x}" cy="${y}" r="${r}" fill="${me?'#D9FF3F':'#0C0D1C'}" stroke="${me?'#D9FF3F':(d?'#F3F0E6':'#5D5F80')}" stroke-width="2"/>
+      <text x="${x}" y="${ly}" text-anchor="middle" font-family="Rubik" font-size="${big?14:12.5}" font-weight="${me?700:500}" paint-order="stroke" stroke="#0C0D1C" stroke-width="5" stroke-linejoin="round" fill="${me?'#D9FF3F':'#F3F0E6'}">${esc(p)}</text></g>`;
+  });
+  return `<svg class="net" viewBox="0 0 ${W} ${H+(big?10:6)}" role="img" aria-label="מפת הקשרים">${lines}${nodes}</svg>`;
+}
+
+/* ===================== SCREENS ===================== */
+function heroNet(){
+  // decorative constellation
+  const pts=[[30,90],[80,40],[140,110],[200,30],[250,95],[310,50],[350,120],[110,135],[275,140]];
+  const ed=[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[2,7],[4,8],[1,3],[6,8]];
+  const col=['#D9FF3F','#D9FF3F','#FF4B2B','#3446FF','#D9FF3F','#FF4B2B','#3446FF','#3446FF','#D9FF3F'];
+  return `<svg class="hero-net" viewBox="0 0 380 160">${ed.map(([a,b],k)=>`<line x1="${pts[a][0]}" y1="${pts[a][1]}" x2="${pts[b][0]}" y2="${pts[b][1]}" stroke="${k%3?'#F3F0E6':'#FF4B2B'}" stroke-opacity="${k%3?.35:1}" stroke-width="2" ${k%3===1?'stroke-dasharray="4 5"':''}><animate attributeName="stroke-opacity" values=".1;${k%3?.5:1};.1" dur="${3+k%4}s" repeatCount="indefinite"/></line>`).join('')}
+  ${pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="${i%3?6:9}" fill="${col[i]}"/>`).join('')}</svg>`;
+}
+
+function isWide(){return matchMedia('(min-width:980px) and (min-aspect-ratio:5/4)').matches}
+function setMode(m){$('#app').className=m||''}
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(S&&S.phase&&!$('#app').querySelector('.home,.setupw'))renderTable()},200)});
+addEventListener('keydown',e=>{if(e.code==='Space'&&$('#flip')&&!$('#flip').classList.contains('flipped')&&document.activeElement.tagName!=='INPUT'){e.preventDefault();$('#flip').click()}});
+function renderHome(){setMode('narrow');
+  const saved=load();const can=saved&&saved.phase&&saved.phase!=='end';
+  $('#app').innerHTML=`<div class="home">
+    <div class="kicker">משחק על הקשרים המפתיעים בין אנשים</div>
+    <div class="logo"><span>שכנות</span><span class="l2">שלובות</span></div>
+    ${heroNet()}
+    <div class="tag">כמה רחוקות אנחנו <em>באמת?</em></div>
+    <div class="meta"><span>3–8 משתתפות</span><span>על מסך גדול, בטלוויזיה או בזום</span><span>או מטלפון אחד</span></div>
+    <div class="stack">
+      ${can?`<button class="btn lime wide" id="resume">להמשיך את הערב (${saved.links.length} חוטים)</button>
+             <button class="btn ghost wide" id="go">ערב חדש</button>`
+           :`<button class="btn lime wide" id="go">מתחילות</button>`}
+    </div></div>`;
+  $('#go').onclick=()=>renderSetup([]);
+  if(can)$('#resume').onclick=()=>{S=saved;renderTable()};
+}
+
+const RULES=[
+ ['מי שבתור שולפת ומקריאה בקול.','השמות על הקלף נבחרים לבד.'],
+ ['עושות מה שכתוב.','לא כל ניחוש צריך להיות נכון.'],
+ ['כל קלף מותח חוט.','מצאנו קשר? חוט מלא. פספסנו? חוט מקווקו.'],
+ ['לא לפי הסדר.','המשחק בוחר מי שולפת הבאה.'],
+ ['מותר לדלג.','שיחה התפתחה? לוחצות ‖ והמשחק מחכה.']
+];
+function rulesHTML(){return `<ol class="rules-mini">${RULES.map((r,i)=>`<li><span class="num">${i+1}</span><span><b>${r[0]}</b> ${r[1]}</span></li>`).join('')}
+  <li style="color:var(--lime);font-weight:700;padding-top:4px">המטרה: שבסוף הערב כולן מחוברות לכולן.</li></ol>`}
+
+function renderSetup(names){setMode('narrow');
+  $('#app').innerHTML=`<div class="stack setupw" style="gap:20px;padding-top:10px">
+    <button class="link" id="back" style="align-self:flex-start">→ חזרה</button>
+    <h2>מי <span class="hl">סביב</span><br>השולחן?</h2>
+    <div class="sub">שם פרטי או כינוי. 3 עד 8 משתתפות.</div>
+    <form class="namebox" id="nf"><input id="ni" maxlength="14" placeholder="שם…" autocomplete="off"><button class="btn lime" type="submit">הוסיפי</button></form>
+    <div class="chips" id="chips">${names.map((n,i)=>`<button class="chip" data-i="${i}">${esc(n)} <span class="x">✕</span></button>`).join('')}</div>
+    <div class="sub" style="font-weight:700;color:var(--paper);margin-top:4px">החוקים, בחצי דקה</div>
+    ${rulesHTML()}
+    <button class="btn lime wide" id="start" ${names.length<3?'disabled':''}>${names.length<3?`עוד ${3-names.length} ומתחילות`:'לערבב ולשלוף'}</button>
+  </div>`;
+  const ni=$('#ni');setTimeout(()=>ni.focus(),50);
+  $('#nf').onsubmit=e=>{e.preventDefault();const v=ni.value.trim();if(!v)return;
+    if(names.length>=8){toast('עד 8 משתתפות');return}
+    if(names.includes(v)){toast('השם כבר ברשימה');return}
+    renderSetup([...names,v])};
+  document.querySelectorAll('#chips .chip').forEach(c=>c.onclick=()=>{const n=names.slice();n.splice(+c.dataset.i,1);renderSetup(n)});
+  $('#back').onclick=renderHome;
+  $('#start').onclick=()=>{
+    S={players:names,deck:shuffle(CARDS.map((_,i)=>i)),pos:0,links:[],drawer:Math.random()*names.length|0,phase:'draw',cur:null,sel:[],kind:null,next:null,skipped:0};
+    save();renderTable();
+  };
+}
+
+function fill(txt,c){
+  const nm=k=>`<span class="nm">${esc(S.players[c[k]])}</span>`;
+  return txt.replace(/\{([ABC])\}/g,(_,k)=>c[k]!=null?nm(k):'מישהי');
+}
+function plain(txt,c){return txt.replace(/\{([ABC])\}/g,(_,k)=>c[k]!=null?S.players[c[k]]:'מישהי')}
+
+function cardFront(c){
+  const card=CARDS[c.id],T=TYPES[card.t];
+  return `<div class="face front t-${card.t}">
+    <svg class="glyph" viewBox="0 0 100 100">${T.g}</svg>
+    <div class="tt"><span>${T.n}</span><span class="no">${String(S.pos).padStart(2,'0')}</span></div>
+    <h3>${card.h}</h3>
+    <p>${fill(card.x,c)}</p>
+    <div class="foot">${fill(card.f,c)}</div></div>`;
+}
+function cardBack(){
+  return `<div class="face back"><svg viewBox="0 0 63 88" preserveAspectRatio="xMidYMid slice">
+    <defs><pattern id="d" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r=".55" fill="#F3F0E6" opacity=".35"/></pattern></defs>
+    <rect width="63" height="88" fill="url(#d)"/>
+    <g stroke="#D9FF3F" stroke-width=".7" fill="none"><path d="M8 14L24 30L14 52L36 66L54 50L46 22L24 30"/><path d="M36 66L30 80" stroke-dasharray="1.6 1.6" stroke="#FF4B2B"/></g>
+    <g fill="#D9FF3F"><circle cx="8" cy="14" r="2"/><circle cx="24" cy="30" r="2.6"/><circle cx="14" cy="52" r="1.8"/><circle cx="54" cy="50" r="2"/><circle cx="46" cy="22" r="1.6"/></g>
+    <circle cx="36" cy="66" r="2.6" fill="#FF4B2B"/><circle cx="30" cy="80" r="1.6" fill="#F3F0E6"/>
+    <rect x="3" y="3" width="57" height="82" rx="4" fill="none" stroke="#F3F0E6" stroke-opacity=".35" stroke-width=".5"/></svg>
+    <div class="bk">שכנות<br>שלובות<small>שלפי</small></div></div>`;
+}
+
+function stopTimer(){clearInterval(timerInt);timerInt=null}
+
+function renderTable(){
+  stopTimer();setMode('');
+  if(S.phase==='end')return renderEnd();
+  if(S.phase!=='draw'&&S.phase!=='card')S.phase=S.cur?'card':'draw';
+  const left=S.deck.length-S.pos;
+  const D=esc(S.players[S.drawer]);
+  let stage='';
+  if(S.phase==='draw'){
+    stage=`<div class="prompt"><b>${D}</b>, תורך לשלוף</div>
+      <div class="flip ready" id="flip"><div class="flip-in">${cardBack()}<div class="face front" id="fslot"></div></div></div>
+      <div class="hint">${left} קלפים בחפיסה · <button class="link" id="other">מישהי אחרת שולפת?</button></div>`;
+  } else {
+    const c=S.cur, card=CARDS[c.id];
+    stage=`<div class="flip flipped noanim"><div class="flip-in">${cardBack()}${cardFront(c)}</div></div>`;
+    if(card.timer) stage+=`<div class="timer" id="tm"><button class="btn ghost" id="tgo">▶ טיימר</button><div class="clock" id="clk">${card.timer}</div></div>`;
+    stage+=`<div class="tiebox"><div class="tiehead">${S.sel.length<2?'סמנו בין מי נמתח החוט':'החוט נמתח בין:'}</div>
+        <div class="chips" id="wch">${S.players.map((p,i)=>`<button class="chip${S.sel.includes(i)?' sel':''}" data-i="${i}">${esc(p)}</button>`).join('')}</div></div>
+      <div class="outcomes">
+        <button class="btn lime" data-k="found">יש חוט!<small>מצאנו קשר</small></button>
+        <button class="btn red" data-k="miss">פספוס מפואר<small>אבל עכשיו אנחנו מכירות</small></button>
+        <button class="btn ghost skip" data-k="skip">דלגו על הקלף</button></div>`;
+  }
+  $('#app').innerHTML=`
+    <div class="top"><div class="mini-logo">שכנות <b>שלובות</b></div>
+      <div class="tools"><span class="count">${S.links.length} חוטים</span>
+        <button class="icon-btn" id="pz" title="עוצרות לשיחה">‖</button>
+        <button class="icon-btn" id="ru" title="חוקים">?</button>
+        <button class="icon-btn" id="en" title="סיום הערב">✕</button></div></div>
+    <div class="board"><div class="side"><div class="netwrap">${netSVG(false)}</div>
+    <div class="legend"><span><i></i>קשר שגילינו</span><span><i class="d"></i>קשר שנוצר הערב</span></div></div>
+    <div class="stage${S.phase!=='draw'?' withcard':''}">${stage}</div></div>`;
+  freshLink=-1;
+  $('#pz').onclick=showPause;$('#ru').onclick=showRules;$('#en').onclick=confirmEnd;
+
+  if(S.phase==='draw'){
+    $('#other').onclick=()=>{
+      const pool=S.players.map((_,i)=>i).filter(i=>i!==S.drawer);
+      S.drawer=pool[(pool.findIndex(i=>i>S.drawer)+pool.length)%pool.length];save();renderTable()};
+    const flip=$('#flip');
+    flip.onclick=()=>{
+      if(flip.classList.contains('flipped'))return;
+      const id=S.deck[S.pos];S.pos++;
+      const A=S.drawer,B=pickOther([A],A),C=pickOther([A,B],B);
+      S.cur={id,A,B,C};
+      S.sel=(CARDS[id].inv||[]).map(x=>S.cur[x]);
+      const tmp=document.createElement('div');tmp.innerHTML=cardFront(S.cur);
+      $('#fslot').replaceWith(tmp.firstElementChild);
+      flip.classList.remove('ready');flip.classList.add('flipped');
+      S.phase='card';save();
+      setTimeout(renderTable,750);
+    };
+  } else {
+    const card=CARDS[S.cur.id];
+    if(card.timer){$('#tgo').onclick=()=>{
+      let t=card.timer;const clk=$('#clk'),tm=$('#tm');$('#tgo').classList.add('hide');stopTimer();
+      timerInt=setInterval(()=>{t--;clk.textContent=t>0?t:'זמן!';if(t<=0){stopTimer();tm.classList.add('done')}},1000)}}
+    document.querySelectorAll('#wch .chip').forEach(c=>c.onclick=()=>{
+      const i=+c.dataset.i;S.sel=S.sel.includes(i)?S.sel.filter(x=>x!==i):[...S.sel,i];
+      c.classList.toggle('sel');
+      $('.tiehead').textContent=S.sel.length<2?'סמנו בין מי נמתח החוט':'החוט נמתח בין:';save()});
+    document.querySelectorAll('.outcomes .btn').forEach(b=>b.onclick=()=>{
+      const k=b.dataset.k;
+      if(k!=='skip'){
+        if(S.sel.length<2){const tb=$('.tiebox');tb.classList.remove('shake');void tb.offsetWidth;tb.classList.add('shake');toast('סמנו לפחות שתיים');return}
+        const sel=S.sel.slice().sort((a,b)=>a-b);
+        for(let i=0;i<sel.length;i++)for(let j=i+1;j<sel.length;j++)S.links.push({a:sel[i],b:sel[j],k,c:card.h});
+        freshLink=S.links.length-1;
+      } else S.skipped++;
+      S.drawer=suggestNext();S.cur=null;S.sel=[];
+      S.phase=S.pos>=S.deck.length?'end':'draw';save();renderTable();
+    });
+  }
+}
+
+/* ===================== OVERLAYS ===================== */
+function openOv(html){$('#ovin').innerHTML=html;$('#ov').classList.remove('hide');window.scrollTo(0,0)}
+function closeOv(){$('#ov').classList.add('hide')}
+function showRules(){
+  openOv(`<div class="ov-top"><div class="mini-logo">החוקים</div><button class="icon-btn" id="cx">✕</button></div>${rulesHTML()}
+   <div class="sub">אין ניקוד ואין מנצחת. יש רק מפה שמתמלאת. כשנגמרת החפיסה, או כשמחליטות שדי, מסתכלות על רשת הערב.</div>`);
+  $('#cx').onclick=closeOv;
+}
+function showPause(){
+  openOv(`<div class="ov-top"><div class="mini-logo">השיחה <b>זורמת</b></div><span></span></div>
+    <div class="sub" style="font-size:17px">המשחק מחכה. אף אחת לא ממהרת. כשתרצו – חוזרות.</div>
+    ${netSVG(true)}
+    <button class="btn lime wide" id="cx">חוזרות למשחק</button>`);
+  $('#cx').onclick=closeOv;
+}
+function confirmEnd(){
+  openOv(`<div class="ov-top"><div class="mini-logo">לסיים את הערב?</div><button class="icon-btn" id="cx">✕</button></div>
+    <div class="sub" style="font-size:17px">נשארו ${S.deck.length-S.pos} קלפים בחפיסה. אפשר לסיים עכשיו ולראות את רשת הערב.</div>
+    <button class="btn red wide" id="yes">כן, לרשת הערב</button><button class="btn ghost wide" id="cx2">עוד קצת</button>`);
+  $('#cx').onclick=$('#cx2').onclick=closeOv;
+  $('#yes').onclick=()=>{closeOv();S.phase='end';save();renderEnd()};
+}
+
+/* ===================== END ===================== */
+function renderEnd(){
+  stopTimer();setMode('endw');
+  const found=S.links.filter(l=>l.k==='found').length,miss=S.links.length-found;
+  const degs=S.players.map((_,i)=>degree(i)),max=Math.max(...degs);
+  const hubs=S.players.filter((_,i)=>degs[i]===max&&max>0);
+  const lonely=S.players.filter((_,i)=>degs[i]===0);
+  const all=allConnected();
+  $('#app').innerHTML=`<div class="stack" style="gap:20px;padding-top:8px">
+    <div class="kicker">סוף הערב</div>
+    <h2>רשת <span class="hl">הערב</span></h2>
+    <div class="endgrid"><div>
+    ${netSVG(true)}
+    <div class="legend"><span><i></i>קשר שגילינו</span><span><i class="d"></i>קשר שנוצר הערב</span></div>
+    <div class="stats">
+      <div class="stat l"><b>${found}</b><span>קשרים ישנים שהתגלו</span></div>
+      <div class="stat r"><b>${miss}</b><span>קשרים חדשים מהערב</span></div>
+      <div class="stat"><b>${all?'✓':degs.filter(d=>d>0).length}</b><span>${all?'כולן מחוברות':'מחוברות לרשת'}</span></div>
+    </div>
+    ${hubs.length?`<div class="sub" style="font-size:16px">הצומת של הערב: <b style="color:var(--lime)">${hubs.map(esc).join(' ו־')}</b>${lonely.length?` · עוד לא נמתח חוט אל ${lonely.map(esc).join(', ')}, אז בפעם הבאה הן שולפות ראשונות.`:''}</div>`:''}
+    </div><div>
+    ${S.links.length?`<div class="sub" style="font-weight:700;color:var(--paper)">החוטים</div>
+    <div class="threads">${S.links.map(l=>`<div class="thread"><i class="${l.k==='found'?'':'d'}"></i>${esc(S.players[l.a])} ↔ ${esc(S.players[l.b])}<span class="c">${esc(l.c)}</span></div>`).join('')}</div>`:''}
+    <div class="closing"><h3>לפני שמתפזרות</h3>
+      <p>כל אחת בוחרת חוט אחד מהמפה ומחליטה מה עושים איתו: קפה, הפניה למישהי, הופעה ביחד, או סתם מספר טלפון.<br><br>ונשאר רק לקבוע: מתי שוב?</p></div>
+    <button class="btn lime wide" id="cp">להעתיק סיכום לקבוצת הווטסאפ</button>
+    <button class="btn ghost wide" id="nw">ערב חדש</button>
+  </div></div></div>`;
+  $('#cp').onclick=async()=>{
+    const txt=`🧵 שכנות שלובות – רשת הערב\n${S.players.join(' · ')}\n\n${found} קשרים ישנים שהתגלו, ${miss} קשרים חדשים\n\n`+
+      S.links.map(l=>`${l.k==='found'?'━':'┅'} ${S.players[l.a]} ↔ ${S.players[l.b]} (${l.c})`).join('\n')+`\n\nמתי שוב? 🗓️`;
+    try{await navigator.clipboard.writeText(txt);toast('הועתק! מדביקות בקבוצה')}
+    catch(e){openOv(`<div class="ov-top"><div class="mini-logo">סמני והעתיקי</div><button class="icon-btn" id="cx">✕</button></div><textarea style="width:100%;height:300px;background:var(--ink2);color:var(--paper);border-radius:16px;padding:14px;font:inherit;border:0">${esc(txt)}</textarea>`);$('#cx').onclick=closeOv}
+  };
+  $('#nw').onclick=()=>{const names=S.players.slice();clearSave();S=null;renderSetup(names)};
+}
+
+renderHome();
+</script>
+</body>
+</html>
